@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using System.Threading.Tasks;
 
 namespace DictionaryCreator
 {
@@ -34,6 +36,27 @@ namespace DictionaryCreator
             return wordCountDic.OrderByDescending(w => w.Value).ToDictionary(k => k.Key, v => v.Value);
         }
 
+        public Dictionary<string, int> ParallelCreateDic(string text)
+        {
+            string[] correctedWords = CorrectPrimaryText(text);
+
+            ConcurrentDictionary<string, int> concWordDictionary = new ConcurrentDictionary<string, int>();
+            try
+            {
+                Parallel.ForEach(correctedWords, w =>
+                {
+                    concWordDictionary.AddOrUpdate(w, 1, (k, oldV) => oldV + 1);
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+
+            Dictionary<string, int> wordCountDic = new Dictionary<string, int>(concWordDictionary);
+            return wordCountDic.OrderByDescending(w => w.Value).ToDictionary(k => k.Key, v => v.Value);
+
+        }
 
     }
 }

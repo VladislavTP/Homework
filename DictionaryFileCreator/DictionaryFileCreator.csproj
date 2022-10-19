@@ -50,5 +50,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DictionaryCreator\DictionaryCreator.csproj">
+      <Project>{35b7ec10-283f-4bfa-9591-9c863466e650}</Project>
+      <Name>DictionaryCreator</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

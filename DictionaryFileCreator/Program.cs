@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
 using System.Runtime;
-
+using System.Diagnostics;
 
 namespace DictionaryFileCreator
 {
      public class Program
     {
         private const string path = @"C:\Users\User\Desktop\Book.txt";
-        private const string uniqWordsPath = @"C:\Users\User\Desktop\UniqueWordsPath.txt";
+        private const string uniqWordsPath = @"C:\Users\User\Desktop\UniqueWords.txt";
         static void Main(string[] args)
         {
             string bookText = "";
@@ -28,14 +28,29 @@ namespace DictionaryFileCreator
                 }
             }
 
-            Assembly DC = Assembly.LoadFrom(@"C: \Users\User\source\repos_2022\Homework1\DictionaryCreator\bin\Debug\DictionaryCreator.dll");
-            Type DCType = DC.GetType("DictionaryCreator.DicCreator");
-            var obj = Activator.CreateInstance(DCType);
-            MethodInfo DCmet = obj.GetType().GetMethod("CreateDic", BindingFlags.NonPublic | BindingFlags.Instance);
-            Dictionary<string, int> finDic = DCmet.Invoke(obj, new object[] { bookText }) as Dictionary<string, int>;
+            // Reflection
+
+            //Assembly DC = Assembly.LoadFrom(@"C:\Users\User\source\repos_2022\Homework\DictionaryCreator\bin\Debug\DictionaryCreator.dll");
+            //Type DCType = DC.GetType("DictionaryCreator.DicCreator");
+            //var obj = Activator.CreateInstance(DCType);
+            //MethodInfo DCmet = obj.GetType().GetMethod("ParallelCreateDic", BindingFlags.Public | BindingFlags.Instance);
+            ////Console.WriteLine(DCmet.Name);
+            ////Console.ReadLine();
+            //Dictionary<string, int> finDic = DCmet.Invoke(obj, new object[] { bookText }) as Dictionary<string, int>;
+
+            //
+
+            DictionaryCreator.DicCreator dicCreatorInstance = new DictionaryCreator.DicCreator();
+            var sw = new Stopwatch();
+            sw.Start();
+            Dictionary<string, int> finDic = dicCreatorInstance.ParallelCreateDic(bookText);
+            sw.Stop();
+            Console.WriteLine(sw.Elapsed);
+            Console.ReadLine();
 
             CreateWordCountFile();
             WriteWordsInFile(finDic);
+
 
         }
 
